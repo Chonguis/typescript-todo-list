@@ -1,12 +1,10 @@
-import React, {MouseEvent, FormEvent, ChangeEvent} from 'react';
+import React, {MouseEvent} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Todos from './components/Todos/Todos';
-import AddForm from './components/AddForm/AddForm';
 
 interface State {
   chores: {id: number; chore: string; done: boolean;}[];
-  choreText: string;
 }
 
 class App extends React.Component<{}, State> {
@@ -28,8 +26,7 @@ class App extends React.Component<{}, State> {
         id: 3,
         chore: 'Lavar carro',
         done: false,
-      }],
-      choreText: "",
+      }]
     }
   }
 
@@ -45,37 +42,12 @@ class App extends React.Component<{}, State> {
     this.setState({chores});
   }
 
-  onChangeHandler = (event: ChangeEvent<HTMLInputElement>):void => {
-    console.log(event.target.value);
-    this.setState({
-      choreText: event.target.value,
-    })
-  }
-
-  submitChoreHandler = (event: FormEvent<HTMLFormElement>):void => {
-    event.preventDefault();
-    this.submitChore();
-  }
-
-  submitChore():void {
-    let choreText = this.state.choreText;
-    let newChore = {
-      // figure out how to generate unique ids, check array and add after length fue lo q yo hice
-      id: this.state.chores.length + 1, 
-      done: false,
-      chore: choreText,
-    }
-    let chores = [...this.state.chores, newChore];    
-    this.setState({ chores , choreText: ''});
-  }
-
   render(){
     return (
       <div className="App">
         <header className="App-header">
             Learn React
         </header>
-        <AddForm submitChoreHandler={this.submitChoreHandler} onChangeHandler={this.onChangeHandler} value={this.state.choreText} />
         <Todos chores={this.state.chores} toggleTodoHandler={this.toggleTodoHandler} />
       </div>
     );
