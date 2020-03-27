@@ -19,7 +19,7 @@ class App extends React.Component<{}, State> {
         id: 4,
         chore: 'Recoger cuarto',
         done: false,
-      }],
+      }], 
       choreText: "",
       idGenerator: 1,
     }
