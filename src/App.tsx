@@ -7,7 +7,6 @@ import AddForm from './components/AddForm/AddForm';
 interface State {
   chores: {id: number; chore: string; done: boolean;}[];
   choreText: string;
-  idGenerator: number;
 }
 
 class App extends React.Component<{}, State> {
@@ -21,21 +20,24 @@ class App extends React.Component<{}, State> {
         done: false,
       },
       {
-        id: 4,
+        id: 2,
         chore: 'Recoger cuarto',
         done: false,
       },
       {
-        id: 6,
+        id: 3,
         chore: 'Lavar carro',
         done: false,
       }],
       choreText: "",
-      idGenerator: 1,
     }
   }
 
-  toggleTodoHandler = (event: MouseEvent<HTMLInputElement>, id: number):void => {
+  toggleTodoHandler = (event: MouseEvent<HTMLElement>, id: number):void => {
+    this.toggleTodo(id);
+  }
+
+  toggleTodo = (id: number): void => {
     let chores = [...this.state.chores];
     chores.forEach(chore => {
       if(chore.id == id) chore.done = !chore.done;
@@ -43,12 +45,6 @@ class App extends React.Component<{}, State> {
     this.setState({chores});
   }
 
-  deleteTodoHandler = (event: MouseEvent<HTMLButtonElement>, id: number) => {
-    let chores = [...this.state.chores];
-    chores = chores.filter(chore => chore.id !== id);
-    this.setState({ chores });
-  }
-  
   onChangeHandler = (event: ChangeEvent<HTMLInputElement>):void => {
     console.log(event.target.value);
     this.setState({
@@ -57,38 +53,20 @@ class App extends React.Component<{}, State> {
   }
 
   submitChoreHandler = (event: FormEvent<HTMLFormElement>):void => {
-    event.preventDefault(); 
+    event.preventDefault();
+    this.submitChore();
+  }
 
-    let chores = [...this.state.chores];  
-    let id = this.getUniqueId(chores); 
+  submitChore():void {
     let choreText = this.state.choreText;
     let newChore = {
       // figure out how to generate unique ids, check array and add after length fue lo q yo hice
-      id, 
+      id: this.state.chores.length + 1, 
       done: false,
       chore: choreText,
     }
-    chores = [...this.state.chores, newChore];   
-
-    this.setState({ 
-      chores , 
-      choreText: '', 
-      idGenerator: id });
-  }
-
-  getUniqueId = (chores: {id: number; chore: string; done: boolean;}[]): number => {
-    //generateUniqueId
-    //hacer listas de id's que ya hay
-    //ver si el state idGenerator está incluído
-    //si sí, devolver ese id,
-    //si no, incrementarlo una vez y volver a heck    
-    let { idGenerator } = this.state;
-    let choresIds: number[] = [];
-    chores.forEach((chore, i) => {
-      if (chore.id) choresIds.push(chore.id);
-    });
-    while(choresIds.includes(idGenerator)) idGenerator++
-    return idGenerator
+    let chores = [...this.state.chores, newChore];    
+    this.setState({ chores , choreText: ''});
   }
 
   render(){
@@ -97,14 +75,8 @@ class App extends React.Component<{}, State> {
         <header className="App-header">
             Learn React
         </header>
-        <AddForm 
-          submitChoreHandler={this.submitChoreHandler} 
-          onChangeHandler={this.onChangeHandler} 
-          value={this.state.choreText} />
-        <Todos 
-          chores={this.state.chores} 
-          toggleTodoHandler={this.toggleTodoHandler}
-          deleteTodoHandler={this.deleteTodoHandler} />
+        <AddForm submitChoreHandler={this.submitChoreHandler} onChangeHandler={this.onChangeHandler} value={this.state.choreText} />
+        <Todos chores={this.state.chores} toggleTodoHandler={this.toggleTodoHandler} />
       </div>
     );
   }
